@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 #include <dirent.h>
 #include "dir_list.h"
 
@@ -21,16 +22,23 @@ dir_list* dir_list_construct_obj(void)
 
 void dir_list_test(dir_list obj)
 {
-    char files[100][30]; //allows 100 files with 30 letter names
+    char files[100]; //allows 100 files with 30 letter names
     DIR *d;
     struct dirent *dir;
     d = opendir(".");
     if (d)
     {
+        int file_count = 0;
+        char file_name[30];
         while ((dir = readdir(d)) != NULL)
         {
-            printf("%s\n", dir->d_name);
+            strcpy(file_name, dir->d_name);
+            //printf("%s \n", file_name);
+            strcpy(&files[file_count], file_name);
+            file_count++;
         }
+            
+
         closedir(d);
     }
 }
