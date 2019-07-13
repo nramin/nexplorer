@@ -1,8 +1,21 @@
 #include <ncurses.h>			/* ncurses.h includes stdio.h */  
 #include <string.h> 
-#include <dirent.h>
 #include "dir_list.h"
- 
+
+#define WIDTH 30
+#define HEIGHT 10
+
+int startx = 0;
+int starty = 0;
+
+char *choices[] = {
+        "Choice 1",
+        "Choice 2",
+};
+
+int n_choices = sizeof(choices) / sizeof(char *);
+void print_menu(WINDOW *menu_win, int highlight);
+
 int main()
 {
     dir_list* list = dir_list_construct_obj();
@@ -11,20 +24,79 @@ int main()
     dir_list_set_indent(list, 15);
     printf("%d\n", dir_list_get_indent(list));
     dir_list_delete_obj(list);
+    
+    WINDOW *menu_win;
+    int highlight = 1;
+    int choice = 0;
+    int c;
+    
+    initscr();
+    clear();
+    noecho();
+    cbreak();
+    startx = (80 - WIDTH) / 2;
+    starty = (24 - HEIGHT) / 2;
 
-    char mesg[]="Enter a string: ";		/* message to be appeared on the screen */
-    char str[80];
-    int row,col;				/* to store the number of rows and *
-            * the number of colums of the screen */
-    initscr();				/* start the curses mode */
-    getmaxyx(stdscr,row,col);		/* get the number of rows and columns */
-    mvprintw(row/2,(col-strlen(mesg))/2,"%s",mesg);
+    menu_win = newwin(HEIGHT, WIDTH, starty, startx);
+    keypad(menu_win, TRUE);
+    mvprintw(0, 0, "Use arrow keys");
+    refresh();
+    print_menu(menu_win, highlight);
+    while(1)
+    {
+        c = wgetch(menu_win);
+        switch(c)
+        {
+            case KEY_UP:
+                if (highlight == 1)
+                    highlight = n_choices;
+                else
+                    --highlight;
+                break;
+            case KEY_DOWN:
+                if (highlight == n_choices)
+                    highlight = 1;
+                else
+                    ++highlight;
+                break;
+            case 10:
+                choice = highlight;
+                break;
+            default:
+                refresh();
+                break;
+        }
+        print_menu(menu_win, highlight);
+        if (choice != 0)
+            break;
+    }
 
-    /* print the message at the center of the screen */
-    getstr(str);
-    mvprintw(LINES - 2, 0, "You Entered: %s", str);
-    getch();
+    mvprintw(23, 0, "You chose");
+    clrtoeol();
+    refresh();
     endwin();
 
     return 0;
+}
+
+void print_menu(WINDOW *menu_win, int highlight)
+{
+    int x, y, i;
+
+    x = 2;
+    y = 2;
+    box(menu_win, 0, 0);
+    for (i = 0; i < n_choices; ++i)
+    {
+        if (highlight == i + 1)
+        {
+            wattron(menu_win, A_REVERSE);
+            mvwprintw(menu_win, y, x, "%s", choices[i]);
+            wattroff(menu_win, A_REVERSE);
+        }
+        else
+            mvwprintw(menu_win, y, x, "%s", choices[i]);
+        ++y;
+    }
+    wrefresh(menu_win);
 }

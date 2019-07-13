@@ -1,5 +1,6 @@
 #include <stdlib.h>
-#include <stdio.h> 
+#include <stdio.h>
+#include <dirent.h>
 #include "dir_list.h"
 
 struct dir_list
@@ -20,7 +21,18 @@ dir_list* dir_list_construct_obj(void)
 
 void dir_list_test(dir_list obj)
 {
-    puts("test");
+    char files[100][30]; //allows 100 files with 30 letter names
+    DIR *d;
+    struct dirent *dir;
+    d = opendir(".");
+    if (d)
+    {
+        while ((dir = readdir(d)) != NULL)
+        {
+            printf("%s\n", dir->d_name);
+        }
+        closedir(d);
+    }
 }
 
 void dir_list_set_indent(dir_list* list, int indent)
