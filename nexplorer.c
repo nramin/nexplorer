@@ -2,25 +2,28 @@
 #include <string.h> 
 #include "dir_list.h"
 
-#define WIDTH 30
-#define HEIGHT 10
+#define WIDTH 40
+#define HEIGHT 20
 
 int startx = 0;
 int starty = 0;
 
-char *choices[] = {
-        "Choice 1",
-        "Choice 2",
-};
+//char *choices[] = {
+//        "Choice 1",
+//        "Choice 2",
+//};
+
+char choices[100][30];
 
 int n_choices = sizeof(choices) / sizeof(char *);
+
 void print_menu(WINDOW *menu_win, int highlight);
 
 int main()
 {
     dir_list* list = dir_list_construct_obj();
     dir_list_set_indent(list, 5);
-    dir_list_test(list);
+    dir_list_test(list, choices);
     dir_list_set_indent(list, 15);
     printf("%d\n", dir_list_get_indent(list));
     dir_list_delete_obj(list);
@@ -31,6 +34,7 @@ int main()
     int c;
     
     initscr();
+    //scrollok(stdscr, TRUE);
     clear();
     noecho();
     cbreak();

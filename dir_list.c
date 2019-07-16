@@ -20,22 +20,30 @@ dir_list* dir_list_construct_obj(void)
     return instance;
 }
 
-void dir_list_test(dir_list obj)
+void dir_list_test(dir_list obj, char files[100][30])
 {
-    char files[100]; //allows 100 files with 30 letter names
     DIR *d;
     struct dirent *dir;
     d = opendir(".");
     if (d)
     {
         int file_count = 0;
-        char file_name[30];
         while ((dir = readdir(d)) != NULL)
         {
-            strcpy(file_name, dir->d_name);
-            //printf("%s \n", file_name);
-            strcpy(&files[file_count], file_name);
+            strcpy(files[file_count], dir->d_name);
             file_count++;
+        }
+
+        while (file_count < 100) {
+            strcpy(files[file_count], "UNUSED_FILE_INDEX");
+            file_count++;
+        }
+
+        for (int i = 0; i < 100; i++) {
+            if (strcmp(files[i],"UNUSED_FILE_INDEX") != 0) {
+                printf("%s\n", files[i]);
+            }
+            
         }
             
 
