@@ -2,30 +2,24 @@
 #include <string.h> 
 #include "dir_list.h"
 
-#define WIDTH 40
-#define HEIGHT 20
-
-int startx = 0;
-int starty = 0;
-
-//char *choices[] = {
-//        "Choice 1",
-//        "Choice 2",
-//};
-
 char choices[100][30];
 
-int n_choices = sizeof(choices) / sizeof(char *);
+int n_choices = 0;
 
 void print_menu(WINDOW *menu_win, int highlight);
 
 int main()
 {
+    int HEIGHT, WIDTH;
+
+    printf("%d\n", n_choices);
     dir_list* list = dir_list_construct_obj();
-    dir_list_set_indent(list, 5);
-    dir_list_test(list, choices);
-    dir_list_set_indent(list, 15);
-    printf("%d\n", dir_list_get_indent(list));
+    //dir_list_set_indent(list, 5);
+    dir_list_get_files(list, choices);
+    //dir_list_set_indent(list, 15);
+    //printf("%d\n", dir_list_get_indent(list));
+    printf("%d\n", dir_list_get_file_count(list));
+    n_choices = dir_list_get_file_count(list);
     dir_list_delete_obj(list);
     
     WINDOW *menu_win;
@@ -34,16 +28,15 @@ int main()
     int c;
     
     initscr();
+    getmaxyx(stdscr, HEIGHT, WIDTH);
+
     //scrollok(stdscr, TRUE);
     clear();
     noecho();
     cbreak();
-    startx = (80 - WIDTH) / 2;
-    starty = (24 - HEIGHT) / 2;
 
-    menu_win = newwin(HEIGHT, WIDTH, starty, startx);
+    menu_win = newwin(HEIGHT, WIDTH, 0, 0);
     keypad(menu_win, TRUE);
-    mvprintw(0, 0, "Use arrow keys");
     refresh();
     print_menu(menu_win, highlight);
     while(1)

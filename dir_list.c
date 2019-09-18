@@ -7,6 +7,7 @@
 struct dir_list
 {
     int indent;
+    int file_count;
 };
 
 dir_list* dir_list_construct_obj(void)
@@ -20,7 +21,7 @@ dir_list* dir_list_construct_obj(void)
     return instance;
 }
 
-void dir_list_test(dir_list obj, char files[100][30])
+void dir_list_get_files(dir_list* this, char files[100][30])
 {
     DIR *d;
     struct dirent *dir;
@@ -33,6 +34,7 @@ void dir_list_test(dir_list obj, char files[100][30])
             strcpy(files[file_count], dir->d_name);
             file_count++;
         }
+        this->file_count = file_count;
 
         while (file_count < 100) {
             strcpy(files[file_count], "UNUSED_FILE_INDEX");
@@ -41,7 +43,7 @@ void dir_list_test(dir_list obj, char files[100][30])
 
         for (int i = 0; i < 100; i++) {
             if (strcmp(files[i],"UNUSED_FILE_INDEX") != 0) {
-                printf("%s\n", files[i]);
+                //printf("%s\n", files[i]);
             }
             
         }
@@ -50,6 +52,11 @@ void dir_list_test(dir_list obj, char files[100][30])
         closedir(d);
     }
 }
+
+// int dir_list_get_file_count()
+// {
+//     int count = 0;
+// }
 
 void dir_list_set_indent(dir_list* list, int indent)
 {
@@ -63,6 +70,11 @@ void dir_list_set_indent(dir_list* list, int indent)
 int dir_list_get_indent(dir_list* this)
 {
     return this->indent;
+}
+
+int dir_list_get_file_count(dir_list* this)
+{
+    return this->file_count;
 }
 
 void dir_list_delete_obj(dir_list* obj) {

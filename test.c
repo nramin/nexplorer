@@ -46,13 +46,13 @@ int main()
 	my_menu = new_menu((ITEM **)my_items);
 
 	/* Create the window to be associated with the menu */
-        my_menu_win = newwin(10, 40, 4, 4);
+        my_menu_win = newwin(20, 40, 4, 4);
         keypad(my_menu_win, TRUE);
      
 	/* Set main window and sub window */
         set_menu_win(my_menu, my_menu_win);
-        set_menu_sub(my_menu, derwin(my_menu_win, 6, 38, 3, 1));
-	set_menu_format(my_menu, 5, 1);
+        set_menu_sub(my_menu, derwin(my_menu_win, 6, 42, 3, 1));
+	set_menu_format(my_menu, 8, 1);
 			
 	/* Set menu mark to the string " * " */
         set_menu_mark(my_menu, " * ");
