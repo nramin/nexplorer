@@ -6,6 +6,7 @@
 
 struct dir_list
 {
+    char current_directory[1024];
     int indent;
     int file_count;
 };
@@ -79,4 +80,13 @@ int dir_list_get_file_count(dir_list* this)
 
 void dir_list_delete_obj(dir_list* obj) {
     free (obj);
+}
+
+void dir_list_set_current_directory(dir_list* list, char directory[1024]) {
+    //list->current_directory = directory;
+    memcpy(list->current_directory, directory, 1024);
+}
+
+char* dir_list_get_current_directory(dir_list* this) {
+    return this->current_directory;
 }
